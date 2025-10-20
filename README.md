@@ -1,34 +1,18 @@
-# General Directed Weighted Graph
+# **General Directed Weighted Graph**
 
-* Implements `gdwg::graph<N,E>`: a value-semantics, directed multigraph with both unweighted and weighted edges.
-* Owns copies of node and edge data; no redundant duplicates; moved-from graphs become empty.
-* Enforces unique nodes; allows reflexive edges; forbids duplicate (src,dst,weight).
-* Orders edges by (src, dst, then weight asc); unweighted precede weighted for same (src,dst).
-* Provides edge hierarchy: abstract `edge<N,E>` with `print_edge()`, `is_weighted()`, `get_weight()`, `get_nodes()`, `operator==`, and virtual dtor.
-* `weighted_edge` stores src/dst/weight; `unweighted_edge` stores src/dst; both implement base API.
-* Constructors: default; from `initializer_list`/iterator range; copy/move; copy/move assign.
-* Modifiers:
+**Type:** C++ Library (Header-first) · **Tech:** C++20, STL · **Status:** Completed
 
-  * `insert_node(v)`: add node if absent.
-  * `insert_edge(src,dst,opt<weight>)`: add un/weighted edge; error if nodes missing.
-  * `replace_node(old,new)`: rename node if `new` absent; error if `old` missing.
-  * `merge_replace_node(old,new)`: redirect all edges from/to `old` to `new`, removing duplicates; errors if either missing.
-  * `erase_node(v)`: delete node and all incident edges.
-  * `erase_edge(src,dst,opt<weight>)`: delete specific edge; error if nodes missing.
-  * `erase_edge(it)` / `erase_edge(it, it2)`: erase by iterator(s); return post-erase iterator.
-  * `clear() noexcept`: remove all nodes/edges.
-* Accessors:
+## **Overview:**
+Value-semantics directed multigraph `gdwg::graph<N,E>` with unique nodes and no duplicate edges, supporting both unweighted and weighted edges with strict ordering and full iterator/range support.
 
-  * `is_node(v)`: membership (`O(log n)`).
-  * `empty()`: no nodes.
-  * `is_connected(src,dst)`: any edge exists; errors if nodes missing.
-  * `nodes()`: vector copy of all nodes, ascending.
-  * `edges(src,dst)`: vector of copies of edges from src→dst, unweighted first, then weighted asc; errors if nodes missing.
-  * `find(src,dst,opt<weight>)`: iterator to matching edge or `end()`.
-  * `connections(src)`: sorted unique destinations from src; errors if src missing.
-* Iteration: bidirectional `graph::iterator` over edges only (nodes without edges are skipped); deref yields `{from,to,optional<weight>}`.
-* Range: `begin()/end()` (const) define iterable edge list; supports `++/--`, `==`.
-* Equality: `operator==` true iff graphs have identical node sets and edge sets (including weights/unweighted).
-* Output: `operator<<` prints each node and its outgoing edges using the specified format; unweighted first, then weighted asc.
-* Complexity notes respected (e.g., `edges/find/erase` with `log n + e` style bounds).
-* Applies `const`/`noexcept` where appropriate; no extra public members beyond spec (friend non-member ops allowed).
+## **Highlights**
+
+* **Edges:** Abstract `edge<N,E>` API (`print_edge()`, `is_weighted()`, `get_weight()`, `get_nodes()`, `operator==`); concrete `unweighted_edge` and `weighted_edge` with ordering by `(src,dst,weight)` and unweighted before weighted.
+* **Core Ops:** `insert_node`, `insert_edge(src,dst,opt<weight>)`, `replace_node`, `merge_replace_node` (redirects and de-dupes), `erase_node`, `erase_edge` (by key or iterator[s]), `clear() noexcept`.
+* **Queries:** `is_node`, `empty`, `is_connected`, `nodes()` (sorted), `edges(src,dst)` (unweighted first, then weight-asc), `find`, `connections(src)`; complexity bounds respected.
+* **Iteration:** Bidirectional edge iterator over `{from,to,optional<weight>}`; `begin/end` const; nodes without edges skipped.
+* **Semantics:** Owns copies; moved-from becomes empty; equality compares node and edge sets; `operator<<` prints nodes with outgoing edges; `const`/`noexcept` where sensible.
+* **I/O & Conversions:** Clean stream output; no accidental allocations; initialisers from ranges and lists; full copy/move ctor/assign.
+
+## **Why it's interesting:** 
+Demonstrates clean value semantics, disciplined ordering and invariants, efficient associative data use, and a sharp API surface suitable for teaching graph ADTs and testing.
